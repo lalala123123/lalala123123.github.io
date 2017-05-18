@@ -35,6 +35,34 @@
 
 	<article>
 	
+		<h1><a href="/2017/05/18/hadoop-problem/">hadoop_problem</a></h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-18</span><br />
+		
+		
+	</div>
+
+	
+
+	
+		<h1 id="hadoop-web没有显示作业进度"><a href="#hadoop-web没有显示作业进度" class="headerlink" title="hadoop web没有显示作业进度"></a>hadoop web没有显示作业进度</h1><p>之前的hadoop版本中可以开启50030端口，查看历史作业信息，但是在hadoop2.x使用yarn作为作业服务，代替50030端口是一个hobhistroy服务，默认情况下需要手动启动。</p>
+<h4 id="1、编辑mapred-site-xml"><a href="#1、编辑mapred-site-xml" class="headerlink" title="1、编辑mapred-site.xml:"></a>1、编辑mapred-site.xml:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">&lt;configuration&gt;  </div><div class="line">        &lt;property&gt;  </div><div class="line">                &lt;name&gt;mapreduce.framework.name&lt;/name&gt;  </div><div class="line">                &lt;value&gt;yarn&lt;/value&gt;  </div><div class="line">        &lt;/property&gt;  </div><div class="line">        &lt;property&gt;  </div><div class="line">                &lt;name&gt;mapreduce.jobhistory.address&lt;/name&gt;  </div><div class="line">                &lt;value&gt;10.4.1.1:10020&lt;/value&gt;  </div><div class="line">        &lt;/property&gt;  </div><div class="line">        &lt;property&gt;  </div><div class="line">                &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;/name&gt;  </div><div class="line">                &lt;value&gt;10.4.1.1:19888&lt;/value&gt;  </div><div class="line">        &lt;/property&gt;  </div><div class="line">        &lt;property&gt;  </div><div class="line">                &lt;name&gt;mapreduce.jobhistory.joblist.cache.size&lt;/name&gt;  </div><div class="line">                &lt;value&gt;1000&lt;/value&gt;  </div><div class="line">                &lt;description&gt;default 20000&lt;/description&gt;  </div><div class="line">        &lt;/property&gt;  </div><div class="line">        &lt;property&gt;  </div><div class="line">                &lt;name&gt;mapred.child.java.opts&lt;/name&gt;  </div><div class="line">                &lt;value&gt;-Xmx512m&lt;/value&gt;  </div><div class="line">        &lt;/property&gt;  </div><div class="line">        &lt;property&gt;  </div><div class="line">                &lt;name&gt;mapreduce.jobhistory.cleaner.enable&lt;/name&gt;  </div><div class="line">                &lt;value&gt;true&lt;/value&gt;  </div><div class="line">        &lt;/property&gt;  </div><div class="line">        &lt;property&gt;  </div><div class="line">                &lt;name&gt;mapreduce.jobhistory.cleaner.interval-ms&lt;/name&gt;  </div><div class="line">                &lt;value&gt;86400000&lt;/value&gt;  </div><div class="line">                &lt;description&gt;the job history cleaner checks for files to delete, in milliseconds. Default 86400000 (one day). Files are only deleted if they are older than&lt;/description&gt;  </div><div class="line">        &lt;/property&gt;  </div><div class="line">        &lt;property&gt;  </div><div class="line">                &lt;name&gt;mapreduce.jobhistory.max-age-ms&lt;/name&gt;  </div><div class="line">                &lt;value&gt;432000000&lt;/value&gt;  </div><div class="line">        &lt;description&gt;Job history files older than this many milliseconds will be deleted when the history cleaner runs. Defaults to 604800000 (1 week)&lt;/description&gt;  </div><div class="line">        &lt;/property&gt;</div></pre></td></tr></table></figure>
+<h4 id="2、启动history-server"><a href="#2、启动history-server" class="headerlink" title="2、启动history-server"></a>2、启动history-server</h4><p>Hadoop启动jobhistoryserver来实现web查看作业的历史运行情况，由于在启动hdfs和Yarn进程之后，jobhistoryserver进程并没有启动，需要手动启动，<br>启动的方法是通过(注意：必须是两个命令)：<br>./mr-jobhistory-daemon.sh start historyserver<br>./yarn-daemon.sh start timelineserver</p>
+<p>启动完成后，查看进程<br>org.apache.Hadoop.yarn.server.applicationhistoryservice.ApplicationHistoryServer<br>org.apache.hadoop.mapreduce.v2.hs.JobHistoryServer</p>
+<p>更新过后可能会出现以下问题：<br>org.apache.hadoop.yarn.exceptions.InvalidAuxServiceException: The auxService: mapreduce_shuffle does not exist<br>在yarn-site.xml添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;property&gt;  </div><div class="line">        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;  </div><div class="line">        &lt;value&gt;mapreduce_shuffle&lt;/value&gt;  </div><div class="line">&lt;/property&gt;</div></pre></td></tr></table></figure></p>
+
+	
+
+	
+
+</article>
+
+
+
+
+	<article>
+	
 		<h1><a href="/2017/05/17/hexo-github/">hexo+github</a></h1>
 	
 	<div class="article__infos">
