@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="theme-color" content="#33474d">
+	<title>wordcount&#39; | Hexo</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	
+      <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    
+</head>
+
+<body>
+
+	<header class="header">
+		<nav class="header__nav">
+			
+				<a href="/archives" class="header__link">Archive</a>
+			
+				<a href="/tags" class="header__link">Tags</a>
+			
+				<a href="/atom.xml" class="header__link">RSS</a>
+			
+		</nav>
+		<h1 class="header__title"><a href="/">Hexo</a></h1>
+		<h2 class="header__subtitle"></h2>
+	</header>
+
+	<main>
+		<article>
+	
+		<h1>wordcount&#39;</h1>
+	
+	<div class="article__infos">
+		<span class="article__date">2017-05-22</span><br />
+		
+		
+	</div>
+
+	
+
+	
+		<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.util.Arrays;</div><div class="line"><span class="keyword">import</span> java.util.Iterator;</div><div class="line"><span class="keyword">import</span> java.util.List;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.apache.spark.api.java.JavaPairRDD;</div><div class="line"><span class="keyword">import</span> org.apache.spark.api.java.JavaRDD;</div><div class="line"><span class="keyword">import</span> org.apache.spark.api.java.JavaSparkContext;</div><div class="line"><span class="keyword">import</span> org.apache.spark.api.java.function.FlatMapFunction;</div><div class="line"><span class="keyword">import</span> org.apache.spark.api.java.function.Function2;</div><div class="line"><span class="keyword">import</span> org.apache.spark.api.java.function.PairFunction;</div><div class="line"></div><div class="line"><span class="keyword">import</span> scala.Tuple2;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">First</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">		<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">		String file = args[<span class="number">0</span>];</div><div class="line">		JavaSparkContext sc = <span class="keyword">new</span> JavaSparkContext(<span class="string">"local"</span>, <span class="string">"HelloWorld"</span>);</div><div class="line">		JavaRDD&lt;String&gt; data = sc.textFile(file);</div><div class="line">		JavaRDD&lt;String&gt; data1 = data.flatMap(<span class="keyword">new</span> FlatMapFunction&lt;String, String&gt;() &#123;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> Iterator&lt;String&gt; <span class="title">call</span><span class="params">(String arg0)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">				<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">				<span class="keyword">return</span> Arrays.asList(arg0.split(<span class="string">" "</span>)).iterator();</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line">		JavaPairRDD&lt;String, Integer&gt; data2 = data1.mapToPair(<span class="keyword">new</span> PairFunction&lt;String, String, Integer&gt;() &#123;</div><div class="line"></div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> Tuple2&lt;String, Integer&gt; <span class="title">call</span><span class="params">(String arg0)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">				<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">				<span class="keyword">return</span> <span class="keyword">new</span> Tuple2&lt;String, Integer&gt;(arg0, <span class="number">1</span>);</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line">		JavaPairRDD&lt;String, Integer&gt; data3 = data2.reduceByKey(<span class="keyword">new</span> Function2&lt;Integer, Integer, Integer&gt;() &#123;</div><div class="line">			</div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> Integer <span class="title">call</span><span class="params">(Integer arg0, Integer arg1)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">				<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">				<span class="keyword">return</span> arg0+arg1;</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line">		List&lt;Tuple2&lt;String, Integer&gt;&gt; data4 = data3.collect();</div><div class="line">		<span class="keyword">for</span>(Tuple2&lt;?,?&gt; tuple:data4)&#123;</div><div class="line">			System.out.println(tuple._1()+<span class="string">"   "</span>+tuple._2);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+	
+
+	
+		<span class="different-posts"><a href="/2017/05/22/wordcount/" onclick="window.history.go(-1); return false;">⬅️ Go back </a></span>
+
+	
+
+</article>
+
+	</main>
+
+	<footer class="footer">
+	<div class="footer-content">
+		
+	      <div class="footer__element">
+	<p>Hi there, <br />welcome to my Blog glad you found it. Have a look around, will you?</p>
+</div>
+
+	    
+	      <div class="footer__element">
+	<h5>Check out</h5>
+	<ul class="footer-links">
+		<li class="footer-links__link"><a href="/archives">Archive</a></li>
+		
+		  <li class="footer-links__link"><a href="/atom.xml">RSS</a></li>
+	    
+		<li class="footer-links__link"><a href="/about">about page</a></li>
+		<li class="footer-links__link"><a href="/tags">Tags</a></li>
+		<li class="footer-links__link"><a href="/categories">Categories</a></li>
+	</ul>
+</div>
+
+	    
+
+		<div class="footer-credit">
+			<span>© 2017 John Doe | Powered by <a href="https://hexo.io/">Hexo</a> | Theme <a href="https://github.com/HoverBaum/meilidu-hexo">MeiliDu</a></span>
+		</div>
+
+	</div>
+
+
+</footer>
+
+
+
+</body>
+
+</html>
